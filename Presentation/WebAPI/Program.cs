@@ -1,7 +1,18 @@
 
+using Application.Repositories.CompanyRepositories;
+using Application.Repositories.OrderRepositories;
+using Application.Repositories.ProductRepositories;
+using Application.Repositories;
+using Application.Services;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Context;
+using Persistence.Repositories.CompanyRepositories;
+using Persistence.Repositories.OrderRepositories;
+using Persistence.Repositories.ProductRepositories;
+using Persistence.Repositories;
+using Persistence.Services;
 using System;
+using MediatR;
 
 namespace WebAPI
 {
@@ -13,6 +24,23 @@ namespace WebAPI
 
             // Add services to the container.
             builder.Services.AddDbContext<COManagementDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
+            #region Dependency Injection
+            builder.Services.AddScoped<IProductCommandRepository, ProductCommandRepository>();
+            builder.Services.AddScoped<IProductQueryRepository, ProductQueryRepository>();
+            builder.Services.AddScoped<ICompanyCommandRepository, CompanyCommandRepository>();
+            builder.Services.AddScoped<ICompanyQueryRepository, CompanyQueryRepository>();
+            builder.Services.AddScoped<IOrderCommandRepository, OrderCommandRepository>();
+            builder.Services.AddScoped<IOrderQueryRepository, OrderQueryRepository>();
+
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICompanyService, CompanyService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            #endregion
+
+            builder.Services.AddMediatR(typeof(Application.AssemblyReference).Assembly);
 
             builder.Services.AddControllers()
             .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
