@@ -1,4 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
+using Persistence.Context;
+using System;
+
 namespace WebAPI
 {
     public class Program
@@ -8,6 +12,10 @@ namespace WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<COManagementDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
+            builder.Services.AddControllers()
+            .AddApplicationPart(typeof(Presentation.AssemblyReference).Assembly);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
